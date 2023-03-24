@@ -47,15 +47,16 @@ function App() {
           <Routes>
             <Route
               path='/'
-              element={<SearchBooks />} />
-               <Route 
-                path="/login" 
-                element={<LoginForm />}
-              />
-              <Route 
-                path="/signup" 
-                element={<SignupForm />}
-              />
+              element={<SearchBooks />}
+            />
+            <Route
+              path="/login"
+              element={<LoginForm />}
+            />
+            <Route
+              path="/signup"
+              element={<SignupForm />}
+            />
             <Route
               path='/saved'
               element={<SavedBooks />} />
