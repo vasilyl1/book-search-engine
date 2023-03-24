@@ -40,7 +40,7 @@ const LoginForm = (props) => {
             Auth.login(data.login.token);
         } catch (e) {
             console.error(e);
-        }
+        };
 
         // clear form values
         setFormState({
