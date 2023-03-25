@@ -68,7 +68,17 @@ const SearchBooks = () => {
     }
 
     try {
-      const { data } = await saveBook(bookToSave);
+      const { data } = await saveBook({
+        variables: {
+            username: Auth.getProfile().data.username,
+            'savedBooks.bookId': bookToSave.bookId,
+            'savedBooks.authors': bookToSave.authors,
+            'savedBooks.title': bookToSave.title,
+            'savedBooks.description':bookToSave.description,
+            'savedBooks.image': bookToSave.image
+        }
+        });
+        if (!data) throw new Error("Could not save book to DB");
 
       // if book successfully saves to user's account, save book id to state
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);
