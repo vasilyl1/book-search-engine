@@ -11,10 +11,10 @@ const AppNavbar = () => {
     // set modal display state
     const [showModal, setShowModal] = useState(false);
 
-    //const logout = (event) => {
-    //    event.preventDefault();
-    //    Auth.logout();
-    //};
+    const logout = (event) => {
+        event.preventDefault();
+        Auth.logout();
+    };
 
     return (
         <>
@@ -32,6 +32,13 @@ const AppNavbar = () => {
                             {/* if user is logged in show saved books and logout option */}
                             {Auth.loggedIn() ? (
                                 <>
+                                    <Link className="btn btn-lg btn-info m-2" to="/me">
+                                        {Auth.getProfile().data.username}'s profile
+                                    </Link>
+                                    <button className="btn btn-lg btn-light m-2" onClick={logout}>
+                                        Logout
+                                    </button>
+                                    
                                     <Nav.Link as={Link} to='/saved'>
                                         See Your Books
                                     </Nav.Link>

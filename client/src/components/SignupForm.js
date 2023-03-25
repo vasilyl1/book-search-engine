@@ -15,7 +15,7 @@ const SignupForm = (props) => {
     const [showAlert, setShowAlert] = useState(false);
 
     // update state based on form input changes
-    const handleInputChange = (event) => {
+    const handleChange = (event) => {
         const { name, value } = event.target;
 
         setFormState({
@@ -76,8 +76,8 @@ const SignupForm = (props) => {
                             type='text'
                             placeholder='Your username'
                             name='username'
-                            onChange={handleInputChange}
-                            value={data.username}
+                            onChange={handleChange}
+                            value={formState.username}
                             required
                         />
                         <Form.Control.Feedback type='invalid'>Username is required!</Form.Control.Feedback>
@@ -89,8 +89,8 @@ const SignupForm = (props) => {
                             type='email'
                             placeholder='Your email address'
                             name='email'
-                            onChange={handleInputChange}
-                            value={data.email}
+                            onChange={handleChange}
+                            value={formState.email}
                             required
                         />
                         <Form.Control.Feedback type='invalid'>Email is required!</Form.Control.Feedback>
@@ -102,14 +102,14 @@ const SignupForm = (props) => {
                             type='password'
                             placeholder='Your password'
                             name='password'
-                            onChange={handleInputChange}
-                            value={data.password}
+                            onChange={handleChange}
+                            value={formState.password}
                             required
                         />
                         <Form.Control.Feedback type='invalid'>Password is required!</Form.Control.Feedback>
                     </Form.Group>
                     <Button
-                        disabled={!(data.username && data.email && data.password)}
+                        disabled={!(formState.username && formState.email && formState.password)}
                         type='submit'
                         variant='success'>
                         Submit

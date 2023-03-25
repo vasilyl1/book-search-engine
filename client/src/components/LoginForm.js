@@ -13,7 +13,7 @@ const LoginForm = (props) => {
     const [showAlert, setShowAlert] = useState(false);
 
     // update state based on form input changes
-    const handleInputChange = (event) => {
+    const handleChange = (event) => {
         const { name, value } = event.target;
 
         setFormState({
@@ -68,8 +68,8 @@ const LoginForm = (props) => {
                         type='text'
                         placeholder='Your email'
                         name='email'
-                        onChange={handleInputChange}
-                        value={data.email}
+                        onChange={handleChange}
+                        value={formState.email}
                         required
                     />
                     <Form.Control.Feedback type='invalid'>Email is required!</Form.Control.Feedback>
@@ -81,14 +81,14 @@ const LoginForm = (props) => {
                         type='password'
                         placeholder='Your password'
                         name='password'
-                        onChange={handleInputChange}
-                        value={data.password}
+                        onChange={handleChange}
+                        value={formState.password}
                         required
                     />
                     <Form.Control.Feedback type='invalid'>Password is required!</Form.Control.Feedback>
                 </Form.Group>
                 <Button
-                    disabled={!(data.email && data.password)}
+                    disabled={!(formState.email && formState.password)}
                     type='submit'
                     variant='success'>
                     Submit
