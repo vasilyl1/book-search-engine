@@ -11,7 +11,7 @@ const resolvers = {
     },
     Mutation: {
         addUser: async (parent, { body }) => {
-            const user = await User.create({username: body.username, email: body.email, password: body.password});
+            const user = await User.create(body);
             const token = signToken(user);
             return {token, user};
         },
@@ -23,7 +23,7 @@ const resolvers = {
               throw new AuthenticationError('No user found with this email address');
             }
       
-            const correctPw = await user.isCorrectPassword(password);
+            const correctPw = await user.isCorrectPassword(body.password);
       
             if (!correctPw) {
               throw new AuthenticationError('Incorrect credentials');
@@ -33,20 +33,20 @@ const resolvers = {
       
             return { token, user };
           },
-        saveBook: async (parent, { bookData }, context) => {
-            if (context.user)         
+        saveBook: async (parent, { user, book }) => {
+            if (!user)         
                 return await User.findOneAndUpdate(
-                  { _id: context.user._id },
-                  { $addToSet: { savedBooks: bookData } },
+                  { _id: user._id },
+                  { $addToSet: { savedBooks: book } },
                   { new: true, runValidators: true }
                 );
               throw new AuthenticationError('You need to be logged in!');
         },
-        deleteBook: async (parent, { bookId }, context) => {
-            if (context.user)
+        deleteBook: async (parent, { user, bookId }) => {
+            if (!user)
             return await User.findOneAndUpdate(
-                { _id: context.user._id },
-                { $pull: { savedBooks: { bookId: bookId } } },
+                { _id: user._id },
+                { $pull: { savedBooks: { bookId: params } } },
                 { new: true }
             );
             throw new AuthenticationError('You need to be logged in!');
