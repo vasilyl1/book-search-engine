@@ -6,13 +6,12 @@ export const QUERY_USER = gql`
       _id
       username
       email
-      savedBooks [
-        
-        _id {
+      savedBooks {
+        _id 
         thoughtText
         createdAt
-        }
-        ]
+      }   
+    }
       }
     }
   }

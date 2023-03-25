@@ -3,18 +3,21 @@ const { signToken } = require('./../utils/auth');
 
 const resolvers = {
     Query: {
-        user: async (parent, { username }) => {
-            return User.findOne({ username });
+        user: async (parent, user) => {
+            return User.findOne({
+                $or: [{ _id: user._id ? user._id : user._id }, { username: user.username }, { email: user.email }],
+             });
         },
     },
     Mutation: {
-        addUser: async (parent, {username, email, password}) => {
-            const user = await User.create({username, email, password});
+        addUser: async (parent, { body }) => {
+            const user = await User.create({username: body.username, email: body.email, password: body.password});
             const token = signToken(user);
             return {token, user};
         },
-        login: async (parent, { email, password }) => {
-            const user = await User.findOne({ email });
+        login: async (parent, { body } ) => {
+            const user = await User.findOne({
+                $or: [{ username: body.username }, { email: body.email }] });
       
             if (!user) {
               throw new AuthenticationError('No user found with this email address');
