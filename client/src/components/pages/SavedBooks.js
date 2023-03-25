@@ -35,7 +35,7 @@ const SavedBooks = () => {
             return false;
           }
   
-          const response = await Auth.getProfile(token);
+          const response = await Auth.getProfile().data.user;
   
           if (!response.ok) {
             throw new Error('something went wrong!');
@@ -63,7 +63,7 @@ const SavedBooks = () => {
     try {
       const { data } = await deleteBook({
         variables: {
-          username: Auth.getProfile().data.username,
+          username: Auth.getProfile().data.user,
           bookId: bookId
         },
       });

@@ -16,7 +16,7 @@ const SearchBooks = () => {
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
 
-  const [saveBook, { error }] = useMutation(SAVE_BOOK);
+  const [savedBook, { error }] = useMutation(SAVE_BOOK);
 
   // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
   useEffect(() => {
@@ -68,14 +68,10 @@ const SearchBooks = () => {
     }
 
     try {
-      const { data } = await saveBook({
+      const { data } = await savedBook({
         variables: {
-            username: Auth.getProfile().data.username,
-            'savedBooks.bookId': bookToSave.bookId,
-            'savedBooks.authors': bookToSave.authors,
-            'savedBooks.title': bookToSave.title,
-            'savedBooks.description':bookToSave.description,
-            'savedBooks.image': bookToSave.image
+            user: Auth.getProfile().data.user,
+            book: bookToSave
         }
         });
         if (!data) throw new Error("Could not save book to DB");
