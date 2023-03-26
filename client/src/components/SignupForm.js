@@ -27,7 +27,6 @@ const Signup = (props) => {
 
     const handleFormSubmit = async (event) => {
         event.preventDefault();
-        console.log(formState);
         
         // check if form has everything (as per react-bootstrap docs)
         const form = event.currentTarget;
@@ -44,6 +43,7 @@ const Signup = (props) => {
 
         } catch (e) {
             console.error(e);
+            setShowAlert(true);
         };
 
 
@@ -68,7 +68,7 @@ const Signup = (props) => {
                 <Form noValidate validated={data} onSubmit={handleFormSubmit}>
                     {/* show alert if server response is bad */}
                     <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
-                        Something went wrong with your signup!
+                        Error: could not sign up!
                     </Alert>
 
                     <Form.Group className='mb-3'>

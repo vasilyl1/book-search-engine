@@ -15,16 +15,14 @@ const resolvers = {
             const token = signToken(user);
             return { token, user };
         },
-        login: async (parent, { body }) => {
-            const user = await User.findOne({
-                $or: [{ username: body.username }, { email: body.email }]
-            });
+        login: async (parent, { email, password }) => {
+            const user = await User.findOne({ email });
 
             if (!user) {
                 throw new AuthenticationError('No user found with this email address');
             }
 
-            const correctPw = await user.isCorrectPassword(body.password);
+            const correctPw = await user.isCorrectPassword(password);
 
             if (!correctPw) {
                 throw new AuthenticationError('Incorrect credentials');

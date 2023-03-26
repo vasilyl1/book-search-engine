@@ -33,6 +33,7 @@ const LoginForm = (props) => {
         }
 
         try {
+            console.log(formState);
             const { data } = await login({
                 variables: { ...formState },
             });
@@ -40,6 +41,7 @@ const LoginForm = (props) => {
             Auth.login(data.login.token);
         } catch (e) {
             console.error(e);
+            setShowAlert(true);
         };
 
         // clear form values
@@ -60,7 +62,7 @@ const LoginForm = (props) => {
         
             <Form noValidate validated={data} onSubmit={handleFormSubmit}>
                 <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
-                    Something went wrong with your login credentials!
+                    Error: could not log in!
                 </Alert>
                 <Form.Group className='mb-3'>
                     <Form.Label htmlFor='email'>Email</Form.Label>
@@ -94,11 +96,6 @@ const LoginForm = (props) => {
                     Submit
                 </Button>
             </Form>
-            )}
-            {error && (
-              <div className="my-3 p-3 bg-danger text-white">
-                {error.message}
-              </div>
             )}
         </>
     );
