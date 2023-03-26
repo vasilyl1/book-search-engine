@@ -7,7 +7,7 @@ import { ADD_USER } from './utils/mutations';
 //import { createUser } from '../utils/API';
 import Auth from './utils/auth';
 
-const SignupForm = (props) => {
+const Signup = (props) => {
     // set initial form state
     const [formState, setFormState] = useState({ username: '', email: '', password: '' });
     const [addUser, { error, data }] = useMutation(ADD_USER);
@@ -39,8 +39,8 @@ const SignupForm = (props) => {
             const { data } = await addUser({
                 variables: { ...formState },
             });
-
             Auth.login(data.addUser.token);
+
         } catch (e) {
             console.error(e);
         };
@@ -121,4 +121,4 @@ const SignupForm = (props) => {
     );
 };
 
-export default SignupForm;
+export default Signup;
