@@ -33,11 +33,9 @@ const LoginForm = (props) => {
         }
 
         try {
-            console.log(formState);
             const { data } = await login({
                 variables: { ...formState },
             });
-            console.log(data);
             Auth.login(data.login.token);
         } catch (e) {
             console.error(e);
@@ -54,10 +52,9 @@ const LoginForm = (props) => {
     return (
         <>
             {data ?(
-                 <p>
-                 Success! You may now head{' '}
-                 <Link to="/">back to the homepage.</Link>
-               </p>
+                <p>
+                Success! You may now head to your saved books.
+                </p>
             ) : (
         
             <Form noValidate validated={data} onSubmit={handleFormSubmit}>
