@@ -17,6 +17,9 @@ import { removeBookId } from '../utils/localStorage';
 const SavedBooks = () => {
     const [userData, setUserData] = useState({}); // userData state
     const { loading, data } = useQuery(QUERY_USER, { variables: { username: Auth.getProfile().data.username } }); // query user to get saved books
+
+    const usData = data?.savedBooks || {};
+
     const [deleteBook, { error }] = useMutation(DELETE_BOOK); // use to delete book
 
     // use this to determine if `useEffect()` hook needs to run again
@@ -89,12 +92,12 @@ const SavedBooks = () => {
             </div>
             <Container>
                 <h2 className='pt-5'>
-                    {userData.data.savedBooks.length
-                        ? `Viewing ${userData.data.savedBooks.length} saved ${userData.data.savedBooks.length === 1 ? 'book' : 'books'}:`
+                    {usData.data.savedBooks.length
+                        ? `Viewing ${usData.data.savedBooks.length} saved ${usData.data.savedBooks.length === 1 ? 'book' : 'books'}:`
                         : 'You have no saved books!'}
                 </h2>
                 <Row>
-                    {userData.data.savedBooks.map((book) => {
+                    {usData.data.savedBooks.map((book) => {
                         return (
                             <Col md="4">
                                 <Card key={book.bookId} border='dark'>
