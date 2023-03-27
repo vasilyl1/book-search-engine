@@ -6,7 +6,7 @@ import {
     Row,
     Col
 } from 'react-bootstrap';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 
 //import { getMe, deleteBook } from '../utils/API';
 import { QUERY_USER } from '../utils/queries';
@@ -16,31 +16,54 @@ import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
     const [userData, setUserData] = useState({}); // userData state
-    const { loading, data } = useQuery(QUERY_USER, { variables: { username: Auth.getProfile().data.username } }); // query user to get saved books
-
-    const usData = data?.savedBooks || {};
+    const [savedBooksData, setBooksData] = useState([]);
 
     const [deleteBook, { error }] = useMutation(DELETE_BOOK); // use to delete book
 
+    //const { loading, data } = useQuery(QUERY_USER, { variables: { username: Auth.getProfile().data.username } }); // query user to get saved books
+    const [getMe, { data }] = useLazyQuery(QUERY_USER, { variables: { username: Auth.getProfile().data.username } });
+
+    //setUserData(data);
+
     // use this to determine if `useEffect()` hook needs to run again
     const userDataLength = Object.keys(userData).length;
+    const dataLength = Object.keys(savedBooksData).length;
+
+    useEffect(() => {
+        const getSavedBooksData = async () => {
+            try {
+                const savedBooks = data.user?.savedBooks || [];
+                setBooksData(savedBooks);
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        getSavedBooksData();
+    }, [dataLength]);
 
     useEffect(() => {
         const getUserData = async () => {
             try {
-
                 const token = Auth.loggedIn() ? Auth.getToken() : null;
-                if (!token) return false; // no token or expired
-                if (!data) throw new Error("Could not get current user profile from DB");
 
-                setUserData(data); // save user data to the state
+                if (!token) {
+                    return false;
+                }
+
+                //const response = await Auth.getProfile().data;
+                const response = await getMe();
+
+                if (!response) {
+                    throw new Error('something went wrong!');
+                }
+                const user = response.user;
+                setUserData(response);
             } catch (err) {
                 console.error(err);
             }
         };
 
         getUserData();
-
     }, [userDataLength]); // this will ensure useEffect to run if there is user data
 
     // create function that accepts the book's mongo _id value as param and deletes the book from the database
@@ -73,15 +96,14 @@ const SavedBooks = () => {
     };
 
     // if data isn't here yet, say so
-    if (!userDataLength) return <h2>LOADING...</h2>;
-    if (!Auth.loggedIn) {
+    //if (loading) return <h2>LOADING...</h2>;
+    if (!Auth.loggedIn)
         return (
-          <h4>
-            You need to be logged in to see this. Use the navigation links above to
-            sign up or log in!
-          </h4>
+            <h4>
+                You need to be logged in to see this. Use the navigation links above to
+                sign up or log in!
+            </h4>
         );
-      }
 
     return (
         <>
@@ -92,12 +114,12 @@ const SavedBooks = () => {
             </div>
             <Container>
                 <h2 className='pt-5'>
-                    {usData.data.savedBooks.length
-                        ? `Viewing ${usData.data.savedBooks.length} saved ${usData.data.savedBooks.length === 1 ? 'book' : 'books'}:`
+                    {savedBooksData.length
+                        ? `Viewing ${savedBooksData.length} saved ${savedBooksData.length === 1 ? 'book' : 'books'}:`
                         : 'You have no saved books!'}
                 </h2>
                 <Row>
-                    {usData.data.savedBooks.map((book) => {
+                    {savedBooksData.map((book) => {
                         return (
                             <Col md="4">
                                 <Card key={book.bookId} border='dark'>
