@@ -20,74 +20,29 @@ const SavedBooks = () => {
 
     const [deleteBook, { error }] = useMutation(DELETE_BOOK); // use to delete book
 
-    //const { loading, data } = useQuery(QUERY_USER, { variables: { username: Auth.getProfile().data.username } }); // query user to get saved books
-    const [getMe, { data }] = useLazyQuery(QUERY_USER, { variables: { username: Auth.getProfile().data.username } });
-
-    //setUserData(data);
-
-    // use this to determine if `useEffect()` hook needs to run again
-    const userDataLength = Object.keys(userData).length;
-    const dataLength = Object.keys(savedBooksData).length;
+    const { loading, data } = useQuery(QUERY_USER, { variables: { username: Auth.getProfile().data.username } }); // query user to get saved books
 
     useEffect(() => {
         const getSavedBooksData = async () => {
             try {
-                const savedBooks = data.user?.savedBooks || [];
-                setBooksData(savedBooks);
+                    const savedBooks = data.user?.savedBooks || []; // get the savedbooks array data from usequery
+                    setBooksData(savedBooks); // update the state
             } catch (err) {
                 console.log(err);
             }
         }
         getSavedBooksData();
-    }, [dataLength]);
-
-    useEffect(() => {
-        const getUserData = async () => {
-            try {
-                const token = Auth.loggedIn() ? Auth.getToken() : null;
-
-                if (!token) {
-                    return false;
-                }
-
-                //const response = await Auth.getProfile().data;
-                const response = await getMe();
-
-                if (!response) {
-                    throw new Error('something went wrong!');
-                }
-                const user = response.user;
-                setUserData(response);
-            } catch (err) {
-                console.error(err);
-            }
-        };
-
-        getUserData();
-    }, [userDataLength]); // this will ensure useEffect to run if there is user data
+    });
 
     // create function that accepts the book's mongo _id value as param and deletes the book from the database
     const handleDeleteBook = async (bookId) => {
-
-        const token = Auth.loggedIn() ? Auth.getToken() : null;
-
-        if (!token) return false;
-        const user = Auth.getProfile().data; // get current logged in user profile
-
         try {
             const { data } = await deleteBook({
                 variables: {
-                    username: user.data.username,
+                    username: Auth.getProfile().data.username,
                     bookId: bookId
                 },
             });
-
-            if (!data) {
-                throw new Error('Could not delete the book!');
-            }
-
-            //const updatedUser = await data.json();
-            setUserData(data);
             // upon success, remove book's id from localStorage
             removeBookId(bookId);
         } catch (err) {
