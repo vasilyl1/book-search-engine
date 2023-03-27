@@ -20,7 +20,7 @@ const SavedBooks = () => {
     // use this to determine if `useEffect()` hook needs to run again
     const userDataLength = Object.keys(userData).length;
 
-    const [deleteBook, { error }] = useMutation(DELETE_BOOK);
+    const [deleteBook, { error }] = useMutation(DELETE_BOOK); // use to delete book
 
     useEffect(() => {
         const getUserData = async () => {
@@ -28,9 +28,12 @@ const SavedBooks = () => {
 
                 const token = Auth.loggedIn() ? Auth.getToken() : null;
                 if (!token) return false; // no token or expired
+                const user = Auth.getProfile().data; // get current logged in user profile
 
-                const user = Auth.getProfile().data;
-
+                //const {loading, data} = useQuery(QUERY_USER, { variables: { username: user.username }}); // query user to get saved books
+               
+                //    if (!data) throw new Error("Could not get current user profile from DB");
+                
                 setUserData(user); // save user data to the state
             } catch (err) {
                 console.error(err);
@@ -46,11 +49,12 @@ const SavedBooks = () => {
         const token = Auth.loggedIn() ? Auth.getToken() : null;
 
         if (!token) return false;
+        const user = Auth.getProfile().data; // get current logged in user profile
 
         try {
             const { data } = await deleteBook({
                 variables: {
-                    username: userData.username,
+                    username: user.username,
                     bookId: bookId
                 },
             });
@@ -59,8 +63,8 @@ const SavedBooks = () => {
                 throw new Error('Could not delete the book!');
             }
 
-            const updatedUser = await data.json();
-            setUserData(updatedUser);
+            //const updatedUser = await data.json();
+            setUserData(data);
             // upon success, remove book's id from localStorage
             removeBookId(bookId);
         } catch (err) {

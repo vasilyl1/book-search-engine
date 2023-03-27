@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Col, Form, Button, Card, Row } from "react-bootstrap";
 
 import Auth from "../utils/auth";
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { SAVE_BOOK } from '../utils/mutations';
 import { searchGoogleBooks } from "../utils/googleSearch";
 import { saveBookIds, getSavedBookIds } from "../utils/localStorage";
@@ -16,10 +16,13 @@ const SearchBooks = () => {
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
 
+  // access to DB - mutations and queries
   const [saveBook, { error }] = useMutation(SAVE_BOOK);
 
-  // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
+
+  // set up useEffect hook to save `savedBookIds` list to localStorage and DB on component unmount
   useEffect(() => {
+    
     return () => saveBookIds(savedBookIds);
   });
 

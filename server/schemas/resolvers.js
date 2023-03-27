@@ -33,12 +33,19 @@ const resolvers = {
             return { token, user };
         },
         saveBook: async (parent, { 
-            username, book
+            username, authors, description, bookId, image, link, title
         }) => {
                 return await User.findOneAndUpdate(
                     { username: username },
-                    { $addToSet: { savedBooks: { book } } },
-                    { new: true, runValidators: true }
+                    { $addToSet: { savedBooks: { 
+                        authors,
+                        description,
+                        bookId,
+                        image,
+                        link,
+                        title 
+                    } } },
+                    { new: true }
                 );
         },
         deleteBook: async (parent, { username, bookId }) => {
