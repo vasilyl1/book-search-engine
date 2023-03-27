@@ -16,12 +16,11 @@ import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
     const [userData, setUserData] = useState({}); // userData state
-    const [readUser, {err1}] = useQuery(QUERY_USER); // query user to get saved books
+    const { loading, data } = useQuery(QUERY_USER, { variables: { username: Auth.getProfile().data.username } }); // query user to get saved books
+    const [deleteBook, { error }] = useMutation(DELETE_BOOK); // use to delete book
 
     // use this to determine if `useEffect()` hook needs to run again
     const userDataLength = Object.keys(userData).length;
-
-    const [deleteBook, { error }] = useMutation(DELETE_BOOK); // use to delete book
 
     useEffect(() => {
         const getUserData = async () => {
@@ -29,10 +28,8 @@ const SavedBooks = () => {
 
                 const token = Auth.loggedIn() ? Auth.getToken() : null;
                 if (!token) return false; // no token or expired
-                const user = Auth.getProfile().data; // get current logged in user profile
-               const {data} = await readUser({ variables: { username: user.username }});
-               if (!data) throw new Error("Could not get current user profile from DB");
-                
+                if (!data) throw new Error("Could not get current user profile from DB");
+
                 setUserData(data); // save user data to the state
             } catch (err) {
                 console.error(err);
@@ -54,7 +51,7 @@ const SavedBooks = () => {
         try {
             const { data } = await deleteBook({
                 variables: {
-                    username: user.username,
+                    username: user.data.username,
                     bookId: bookId
                 },
             });
@@ -74,6 +71,14 @@ const SavedBooks = () => {
 
     // if data isn't here yet, say so
     if (!userDataLength) return <h2>LOADING...</h2>;
+    if (!Auth.loggedIn) {
+        return (
+          <h4>
+            You need to be logged in to see this. Use the navigation links above to
+            sign up or log in!
+          </h4>
+        );
+      }
 
     return (
         <>
@@ -84,12 +89,12 @@ const SavedBooks = () => {
             </div>
             <Container>
                 <h2 className='pt-5'>
-                    {userData.savedBooks.length
-                        ? `Viewing ${userData.savedBooks.length} saved ${userData.savedBooks.length === 1 ? 'book' : 'books'}:`
+                    {userData.data.savedBooks.length
+                        ? `Viewing ${userData.data.savedBooks.length} saved ${userData.data.savedBooks.length === 1 ? 'book' : 'books'}:`
                         : 'You have no saved books!'}
                 </h2>
                 <Row>
-                    {userData.savedBooks.map((book) => {
+                    {userData.data.savedBooks.map((book) => {
                         return (
                             <Col md="4">
                                 <Card key={book.bookId} border='dark'>
