@@ -38,7 +38,7 @@ const AppNavbar = () => {
                                     <button className="btn btn-lg btn-light m-2" onClick={logout}>
                                         Logout
                                     </button>
-                                    
+
                                     <Nav.Link as={Link} to='/saved'>
                                         See Your Books
                                     </Nav.Link>
