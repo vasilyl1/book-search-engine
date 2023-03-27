@@ -16,6 +16,7 @@ import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
     const [userData, setUserData] = useState({}); // userData state
+    const [readUser, {err1}] = useQuery(QUERY_USER); // query user to get saved books
 
     // use this to determine if `useEffect()` hook needs to run again
     const userDataLength = Object.keys(userData).length;
@@ -29,18 +30,17 @@ const SavedBooks = () => {
                 const token = Auth.loggedIn() ? Auth.getToken() : null;
                 if (!token) return false; // no token or expired
                 const user = Auth.getProfile().data; // get current logged in user profile
-
-                //const {loading, data} = useQuery(QUERY_USER, { variables: { username: user.username }}); // query user to get saved books
-               
-                //    if (!data) throw new Error("Could not get current user profile from DB");
+               const {data} = await readUser({ variables: { username: user.username }});
+               if (!data) throw new Error("Could not get current user profile from DB");
                 
-                setUserData(user); // save user data to the state
+                setUserData(data); // save user data to the state
             } catch (err) {
                 console.error(err);
             }
         };
 
         getUserData();
+
     }, [userDataLength]); // this will ensure useEffect to run if there is user data
 
     // create function that accepts the book's mongo _id value as param and deletes the book from the database
