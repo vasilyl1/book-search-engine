@@ -29,10 +29,9 @@ const SavedBooks = () => {
                 const token = Auth.loggedIn() ? Auth.getToken() : null;
                 if (!token) return false; // no token or expired
 
-                const { token1, user } = Auth.getProfile();
-                if (!token1) return false; // if no token - authorization problem
+                const user = Auth.getProfile().data;
 
-                setUserData(user); // save user data to the local state
+                setUserData(user); // save user data to the state
             } catch (err) {
                 console.error(err);
             }
