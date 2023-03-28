@@ -58,17 +58,10 @@ function App() {
               path="/signup"
               element={<SignupForm />}
             />
-            {(Auth.loggedIn()) ? (
              <Route
               path="/saved"
               element={<SavedBooks />}
             />
-            ) : (
-             <Route
-              path="/saved"
-              element={<SearchBooks />}
-            />
-            ) }
               
             <Route
               path='*'
