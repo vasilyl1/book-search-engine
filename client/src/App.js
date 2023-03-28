@@ -12,6 +12,7 @@ import SavedBooks from './components/pages/SavedBooks';
 import Navbar from './components/Navbar';
 import LoginForm from './components/LoginForm';
 import SignupForm from './components/SignupForm';
+import Auth from './components/utils/auth';
 
 // Construct main GraphQL API endpoint
 const httpLink = createHttpLink({
@@ -57,9 +58,18 @@ function App() {
               path="/signup"
               element={<SignupForm />}
             />
-            <Route
-              path='/saved'
-              element={<SavedBooks />} />
+            {(Auth.loggedIn()) ? (
+             <Route
+              path="/saved"
+              element={<SavedBooks />}
+            />
+            ) : (
+             <Route
+              path="/saved"
+              element={<SearchBooks />}
+            />
+            ) }
+              
             <Route
               path='*'
               element={<h1 className='display-2'>Wrong page!</h1>} />
