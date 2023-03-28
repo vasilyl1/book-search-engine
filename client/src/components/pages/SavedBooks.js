@@ -50,7 +50,6 @@ const SavedBooks = () => {
     
     return (
         <>
-            {Auth.loggedIn() ? (
                 <>
                     <div fluid className="text-light bg-dark p-5">
                         <Container>
@@ -84,12 +83,6 @@ const SavedBooks = () => {
                         </Row>
                     </Container>
                 </>
-            ) : (
-                <h4>
-                    You need to be logged in to see this. Use the navigation links above to
-                    sign up or log in!
-                </h4>
-            )}
         </>
 
     );
